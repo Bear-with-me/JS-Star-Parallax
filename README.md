@@ -10,6 +10,8 @@ First working example on [JSFiddle](http://jsfiddle.net/ikradex/BU32R/1/).
 
 1.1: [JSFiddle](http://jsfiddle.net/ikradex/3YHVz/embedded/result/).
 
+1.1.2: [JSFiddle](http://jsfiddle.net/ikradex/Dnxdq/embedded/result/).
+
 ###Changelog:
 
 * 1.1.2
