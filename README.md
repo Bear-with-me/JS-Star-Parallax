@@ -11,6 +11,9 @@ First working example on [JSFiddle](http://jsfiddle.net/ikradex/BU32R/1/).
 
 ###Changelog:
 
+* 1.1.2
+ * Improved depth of field
+ * Minor performance improvement
 * 1.1
  * Major performance improvement
  * Rewrite of animation loop

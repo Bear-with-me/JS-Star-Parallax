@@ -3,6 +3,7 @@ var canvas = document.createElement( "canvas" ),
     container = document.getElementById( "gameCanvasContainer" );
 
 var DEFAULT_WIDTH = 800, DEFAULT_HEIGHT = 600;
+var CIRCLE_THRESHOLD = 1.12; // minimum radius for a circle to be visible using the arc method
 
 canvas.width = DEFAULT_WIDTH;
 canvas.height = DEFAULT_HEIGHT;
@@ -72,9 +73,37 @@ function Demo( ) {
     };
 }
 
+/*
+ * Initialize star field
+ * stars divided into layers
+ * layers have different speeds
+ * stars in faster layers are larger
+ */
+Demo.prototype.initBackground = function( ) {
+    this.bgLayers = [];
+
+    for( var i = this.numBgLayers; i > 0; i-- ) {
+        var stars = [];
+
+        for( var j = 0; j < this.baseStarNum * i; j++ ) {
+            var star = {
+                x: getRandomInt( 0, canvas.width ),
+                y: getRandomInt( 0, canvas.height ),
+                radius: Math.round( this.baseStarRadius / i * 100 ) / 100,
+                speed: {
+                    x: Math.round( this.baseStarSpeed.x / i * 100 ) / 100,
+                    y: Math.round( this.baseStarSpeed.y / i * 100 ) / 100 
+                }
+            };
+            stars.push( star );
+        }
+        this.bgLayers.push( stars );
+    }
+};
+
 Demo.prototype.update = function(delta) {
     if ( ! this.started ) {
-        // initialise demo
+        // initialize demo
 
         this.started = true;
         this.initBackground( );
@@ -109,43 +138,19 @@ Demo.prototype.render = function( ) {
         for( var j = 0; j < this.bgLayers[ i ].length; j++ ) {
             var star = this.bgLayers[ i ][ j ];
 
-            if( star.radius >= 0.5 ) {
+            if( star.radius >= CIRCLE_THRESHOLD ) {
                 ctx.beginPath( );
                 ctx.arc( star.x, star.y, star.radius, 0, 2 * Math.PI, false );
                 ctx.fill( );
             } else {
                 // circles cannot be seen below this point
                 // cheaper to render square pixels instead
-
-                ctx.fillRect( star.x, star.y, 1, 1 );
+                // increasing the size for pixels makes sure
+                // there's depth of field and stars are visible
+                var pixelSize = star.radius * 3;
+                ctx.fillRect( star.x, star.y, pixelSize, pixelSize );
             }
         }
-    }
-};
-
-/*
- * initialise star field
- * stars divided into layers
- * layers have different speeds
- * stars in faster layers are larger
- */
-Demo.prototype.initBackground = function( ) {
-    for( var i = this.numBgLayers; i > 0; i-- ) {
-        var stars = [];
-
-        for( var j = 0; j < this.baseStarNum * i; j++ ) {
-            var star = {
-                x: getRandomInt( 0, canvas.width ),
-                y: getRandomInt( 0, canvas.height ),
-                radius: Math.round( this.baseStarRadius / i * 100 ) / 100,
-                speed: {
-                    x: Math.round( this.baseStarSpeed.x / i * 100 ) / 100,
-                    y: Math.round( this.baseStarSpeed.y / i * 100 ) / 100 
-                }
-            };
-            stars.push( star );
-        }
-        this.bgLayers.push( stars );
     }
 };
 
